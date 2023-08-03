@@ -1,0 +1,57 @@
+{% extends "base_bootstrap.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script>
+  $( function() {
+      let slider = $( '#slider-range' );
+      let min_price = $('#id_min_price');
+      let max_price = $('#id_max_price');
+      let min_value = $('#id_min_value');
+      let max_value = $('#id_max_value')
+      slider.slider({
+      range: true,
+      min: 0,
+      max: 10000,
+      values: [min_value.text(), max_value.text()],
+      slide: function( event, ui ) {
+        min_price.val(ui.values[0]);
+        max_price.val(ui.values[1]);
+        min_value.text(ui.values[0]);
+        max_value.text(ui.values[1]);
+      }
+    });
+    min_price.val(slider.slider("values", 0));
+    max_price.val(slider.slider("values", 1));
+  } );
+  </script>
+<div>
+<!-- https://www.w3schools.com/howto/howto_css_search_button.asp -->
+<form action="" method="get" id="search_form">
+    {{ form|crispy }}
+    <label for="id_min_price">Цена: <span id="id_min_value">{% if form.min_price.value %}{{ form.min_price.value }}{% else %}1000{% endif %}</span> - <span id="id_max_value">{% if form.max_price.value %}{{ form.max_price.value }}{% else %}5000{% endif %}</span></label>
+    <div id="slider-range"></div>
+    <button type="submit"><i class="fa fa-search"></i></button>
+<a href="{% url 'cards:all' %}"><i class="fa fa-undo"></i></a>
+</form>
+</div>
+
+{% if card_list %}
+    <br/>
+    <div>
+    <ul>
+        {% for card in card_list %}
+            <li><a href="{% url 'cards:card_detail'  card.id %}">{{ card.name }}</a></li>
+        {% endfor %}
+    </ul>
+    </div>
+{% else %}
+    <p>There are no cards in the database.</p>
+{% endif %}
+<p>
+<a href="{% url 'cards:card_create' %}">Добавить карточку</a>
+</p>
+
+{% endblock %}

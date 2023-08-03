@@ -1,0 +1,41 @@
+{% load humanize %}
+{% block content %}
+<span style="float: right;">
+({{ card.updated_at|naturaltime }})
+</span>
+<h1>
+{{ card.name }}
+</h1>
+<p>
+{{ card.description }}
+</p>
+<p>
+Тип: {{ card.product }}
+</p>
+{% if card.fillings.all %}
+<p>Начинки:
+  {% for filling in card.fillings.all %}
+  <span style="border:1px grey solid; background-color: LightGreen;">{{ filling }}</span>
+  {% endfor %}
+</p>
+{% endif %}
+<p>
+{% if card.image_set.all %}
+    {% for image in card.image_set.all %}
+        <img src="{{ image.image.url }}" width="{{ image.image.width }}" height="{{ image.image.width }}" alt="Can't load image"/>
+    {% endfor %}
+{% endif %}
+</p>
+<p>
+Цена: {{ card.price }}
+</p>
+<p>
+    Кондитер: <a href="{{ card.owner.telegram }}">{{ card.owner.fullName }}</a>
+</p>
+<p>
+<a href="{% url 'cards:all' %}?confectioner={{ card.owner.id }}" >Все карточки кондитера</a>
+</p>
+<p>
+<a href="{% url 'cards:all' %}">Все карточки</a>
+</p>
+{% endblock %}
